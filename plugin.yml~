@@ -1,0 +1,7 @@
+name: PayHome
+version: 0.1
+main: tw.longcat.lab.PayHome.PayHome
+commands:
+   payhome:
+      description: 'Teleport Player to there home with some cost.'
+      usage: '/payhome: Pay for teleporting to home.'
