@@ -43,9 +43,12 @@ public class PayHome extends JavaPlugin{
 		return econ != null;
 	}
 	private boolean setupCmdBook(){
-		cmdbook = (CommandBook)getServer().getPluginManager().getPlugin("CommandBook");
-		return true;
+		cmdbook = (CommandBook)(getServer().getPluginManager().getPlugin("CommandBook"));
+		return cmdbook != null;
 	}
+//	public void passCmdBook(CommandBook cmd){
+//		cmdbook = cmd;
+//	}
 	public void reload(){
 		this.saveDefaultConfig();
 		price = this.getConfig().getDouble("price");
@@ -64,9 +67,13 @@ public class PayHome extends JavaPlugin{
 				}
 				EconomyResponse r = econ.withdrawPlayer(player.getDisplayName(), price);
 				if(r.transactionSuccess()) {
-					sender.sendMessage(String.format(ChatColor.YELLOW + "You have teleport to your home, cost " + ChatColor.WHITE + "%s" + ChatColor.YELLOW + ".", econ.format(r.amount)));
-					sender.sendMessage(String.format(ChatColor.YELLOW + "Remain " + ChatColor.WHITE + "%s" + ChatColor.YELLOW + " in account.", econ.format(r.balance)));
-					player.teleport(cmdbook.getComponentManager().getComponent(HomesComponent.class).getManager().get(getServer().getWorld("world"), player.getName()).getLocation());
+					if(cmdbook.getComponentManager().getComponent(HomesComponent.class).getManager().get(player.getWorld(), player.getName()) != null){
+						sender.sendMessage(String.format(ChatColor.YELLOW + "You have teleport to your home, cost " + ChatColor.WHITE + "%s" + ChatColor.YELLOW + ".", econ.format(r.amount)));
+						sender.sendMessage(String.format(ChatColor.YELLOW + "Remain " + ChatColor.WHITE + "%s" + ChatColor.YELLOW + " in account.", econ.format(r.balance)));
+						player.teleport(cmdbook.getComponentManager().getComponent(HomesComponent.class).getManager().get(player.getWorld(), player.getName()).getLocation());
+					}else{
+						sender.sendMessage(ChatColor.YELLOW + "You don't have home in this world.");
+					}
 				}else if(r.amount > r.balance){
 					sender.sendMessage(ChatColor.YELLOW + "Insufficient funds.");
 				}else{
